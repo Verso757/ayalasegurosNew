@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f766e" />
+    <meta name="description" content="Plataforma centralizada de operación y suscripción de seguros agrícolas y ganaderos." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Cpath d='M50 18c-18 18-29 29-29 45a29 29 0 0 0 58 0C79 47 68 36 50 18Z' fill='none' stroke='white' stroke-width='7'/%3E%3Cpath d='M37 64c9 4 18 3 27-5' fill='none' stroke='%23b6e7d9' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Nexo Seguros | Operación centralizada</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-mark">N</div>
+          <div><strong>Nexo</strong><span>seguros</span></div>
+        </div>
+        <div class="role-card">
+          <span class="eyebrow">VISTA ACTIVA</span>
+          <label for="roleSelect">Perfil operativo</label>
+          <select id="roleSelect">
+            <option value="agent">Agente · Fuerza de ventas</option>
+            <option value="control">Recepción · Mesa de control</option>
+            <option value="admin">Dirección · Administrador</option>
+          </select>
+          <div id="ramosSidebar"></div>
+        </div>
+        <nav class="main-nav" aria-label="Navegación principal">
+          <button class="nav-item active" data-view="inicio"><span class="nav-icon">⌂</span>Inicio</button>
+          <button class="nav-item" data-view="cotizaciones"><span class="nav-icon">◇</span>Cotizaciones</button>
+          <button class="nav-item" data-view="solicitudes"><span class="nav-icon">▣</span>Solicitudes</button>
+          <button class="nav-item" data-view="mesa-control"><span class="nav-icon">◫</span>Mesa de control</button>
+          <button class="nav-item" data-view="clientes"><span class="nav-icon">♙</span>Clientes y expedientes</button>
+          <button class="nav-item" data-view="polizas"><span class="nav-icon">▤</span>Pólizas y pagos</button>
+          <button class="nav-item" data-view="siniestros"><span class="nav-icon">◈</span>Siniestros</button>
+          <button class="nav-item" data-view="reportes"><span class="nav-icon">◒</span>Reportes</button>
+          <button class="nav-item" data-view="catalogos"><span class="nav-icon">⚙</span>Catálogos</button>
+          <button class="nav-item" data-view="agentes"><span class="nav-icon">♙</span>Agentes y usuarios</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <button class="help-link">? <span>Centro de ayuda</span></button>
+          <div class="user-mini"><div class="avatar">LM</div><div><strong>Laura Méndez</strong><small>Agente 02 · En línea</small></div><span>•••</span></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button class="mobile-menu" id="menuToggle" aria-label="Abrir menú">☰</button>
+          <div class="breadcrumbs"><span>Operación</span><b>/</b><strong id="breadcrumbCurrent">Resumen general</strong></div>
+          <div class="top-actions">
+            <button class="icon-button" aria-label="Buscar">⌕</button>
+            <button class="notification-button" aria-label="Notificaciones">♧<i></i></button>
+            <div class="date-chip">Jueves, 22 oct 2026</div>
+          </div>
+        </header>
+        <div id="app"></div>
+      </main>
+    </div>
+    <div id="toast" class="toast" role="status"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

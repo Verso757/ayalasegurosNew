@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum ClientType {
+  PERSONA_FISICA
+  PERSONA_MORAL
+}
+
+enum QuoteStatus {
+  BORRADOR
+  CALCULADA
+  CONVERTIDA
+}
+
+enum RequestStatus {
+  EN_REVISION
+  CON_OBSERVACIONES
+  ACEPTADA
+}
+
+enum UserRole {
+  AGENT
+  CONTROL
+  ADMIN
+}
+
+enum CatalogType {
+  RAMO
+  PRODUCTO
+  INCIDENCIA
+}
+
+enum IncidentStatus {
+  ABIERTA
+  RESUELTA
+}
+
+enum DocumentStatus {
+  PENDIENTE
+  VALIDADO
+  OBSERVADO
+}
+
+model DocumentRequirement {
+  id         String        @id @default(cuid())
+  ramo      String
+  clientType ClientType
+  name       String
+  required   Boolean       @default(true)
+  active     Boolean       @default(true)
+  documents  RequestDocument[]
+  @@unique([ramo, clientType, name])
+}
+
+model RequestDocument {
+  id           String              @id @default(cuid())
+  requestId    String
+  requirementId String
+  status       DocumentStatus      @default(PENDIENTE)
+  note         String?
+  request      Request             @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requirement  DocumentRequirement @relation(fields: [requirementId], references: [id])
+  updatedAt    DateTime            @updatedAt
+  @@unique([requestId, requirementId])
+}
+
+model CatalogItem {
+  id        String      @id @default(cuid())
+  type      CatalogType
+  name      String
+  ramo      String   @default("")
+  active    Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  incidents Incident[]
+
+  @@unique([type, name, ramo])
+}
+
+model Incident {
+  id        String         @id @default(cuid())
+  requestId String
+  catalogId String
+  note      String?
+  status    IncidentStatus @default(ABIERTA)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  request   Request        @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  catalog   CatalogItem    @relation(fields: [catalogId], references: [id])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  ramos        UserRamo[]
+}
+
+model UserRamo {
+  id        String   @id @default(cuid())
+  ramo      String
+  active    Boolean  @default(true)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, ramo])
+}
+
+model Client {
+  id        String     @id @default(cuid())
+  folio     String     @unique
+  name      String
+  type      ClientType
+  rfc       String?
+  email     String?
+  createdAt DateTime   @default(now())
+  quotes    Quote[]
+  requests  Request[]
+  historicalPolicies HistoricalPolicy[]
+}
+
+model HistoricalPolicy {
+  id            String   @id @default(cuid())
+  folio         String   @unique
+  policyNumber  String?
+  ramo          String
+  status        String?
+  startDate     String?
+  endDate       String?
+  source        String   @default("CSV")
+  clientId      String?
+  client        Client?  @relation(fields: [clientId], references: [id])
+  createdAt     DateTime @default(now())
+}
+
+model Quote {
+  id          String      @id @default(cuid())
+  folio       String      @unique
+  ramo       String
+  product     String?
+  detail      String?
+  location    String?
+  insuredSum  Float?
+  status      QuoteStatus @default(BORRADOR)
+  clientId    String?
+  client      Client?     @relation(fields: [clientId], references: [id])
+  request     Request?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Request {
+  id          String        @id @default(cuid())
+  folio       String        @unique
+  type        String
+  amount      Float?
+  status      RequestStatus @default(EN_REVISION)
+  clientId    String?
+  client      Client?       @relation(fields: [clientId], references: [id])
+  quoteId     String        @unique
+  quote       Quote         @relation(fields: [quoteId], references: [id])
+  observation String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  incidents Incident[]
+  documents RequestDocument[]
+}
