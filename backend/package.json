@@ -9,7 +9,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --name init",
     "db:seed": "tsx src/seed.ts",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "db:migrate:deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@fastify/cors": "^11.1.0",
