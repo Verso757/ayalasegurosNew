@@ -15,7 +15,7 @@ declare module 'fastify' {
 }
 app.decorateRequest('user')
 
-await app.register(cors, { origin: true })
+app.register(cors, { origin: true })
 
 app.get('/health', async () => ({
   status: 'ok',
@@ -457,12 +457,16 @@ app.patch<{ Params: { id: string }; Body: { status?: RequestStatus; observation?
 const port = Number(process.env.PORT || 3000)
 const host = process.env.HOST || '127.0.0.1'
 
-try {
-  await app.listen({ port, host })
-} catch (error) {
-  app.log.error(error)
-  process.exit(1)
+async function startServer() {
+  try {
+    await app.listen({ port, host })
+  } catch (error) {
+    app.log.error(error)
+    process.exit(1)
+  }
 }
+
+void startServer()
 
 process.on('SIGTERM', async () => {
   await db.$disconnect()
